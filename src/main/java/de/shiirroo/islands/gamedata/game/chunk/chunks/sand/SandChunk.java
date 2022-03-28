@@ -1,0 +1,93 @@
+package de.shiirroo.islands.gamedata.game.chunk.chunks.sand;
+
+import de.shiirroo.islands.gamedata.game.Rarity;
+import de.shiirroo.islands.gamedata.game.chunk.GameBlock;
+import de.shiirroo.islands.gamedata.game.chunk.GameChunk;
+import de.shiirroo.islands.gamedata.game.chunk.GameStructure;
+import de.shiirroo.islands.gamedata.game.blocks.BlockDataCreator;
+import de.shiirroo.islands.gamedata.game.chunk.chunks.ChunkCreator;
+import de.shiirroo.islands.gamedata.game.items.gameitems.blocks.BlockCreator;
+import de.shiirroo.islands.gamedata.game.items.gameitems.blocks.common.Sand;
+import de.shiirroo.islands.gamedata.game.items.gameitems.blocks.uncommon.Cactus;
+import de.shiirroo.islands.gamedata.game.items.gameitems.blocks.uncommon.Sugar_Cane;
+import de.shiirroo.islands.utilis.Utilis;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.units.qual.A;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class SandChunk extends ChunkCreator implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 6871948464050295099L;
+
+    @Override
+    public ArrayList<BlockDataCreator> getChunkMaterialList() {
+        return new ArrayList<>(Arrays.asList(
+                new BlockDataCreator(new Cactus()),
+                new BlockDataCreator(new Sugar_Cane())));
+    }
+
+
+    @Override
+    public String chunkFileName() {
+        int r = Utilis.generateRandomInt(20);
+        return "randomArea_" + r;
+    }
+
+    @Override
+    public ItemStack chunkDisplayItem() {
+        ItemStack itemStack = new ItemStack(Material.SAND);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName("Sand Island");
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        itemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        itemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        itemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
+    }
+
+    @Override
+    public List<BlockCreator> placedOn() {
+        return List.of(new Sand());
+    }
+
+    @Override
+    public Rarity rarity() {
+        return Rarity.UNCOMMON;
+    }
+
+    @Override
+    public int ChunkPlaceSize() {
+        return 10;
+    }
+
+    @Override
+    public GameStructure getGameStructure(int x, int z, GameChunk gameChunk) {
+        ArrayList<GameBlock> chunkBlockList = new ArrayList<>();
+        int r = Utilis.generateRandomInt(getChunkMaterialList().size());
+
+        chunkBlockList.add(new GameBlock(getChunkMaterialList().get(r).getBlockDataString(), x, 51, z));
+
+        return new GameStructure(chunkBlockList, gameChunk, 1);
+    }
+
+    @Override
+    protected boolean checkPlaceChunk(int x, int z, Chunk c) {
+        return (placedOn().stream().anyMatch(blockCreator -> blockCreator.getItemStack().getType().equals(c.getBlock(x,50,z).getType())) &&
+                c.getBlock(x < 15? x + 1:x ,51,z).getType().isAir() &&
+                c.getBlock(x >  0? x - 1:x ,51,z).getType().isAir() &&
+                c.getBlock(x,51,z < 15?  z + 1:z).getType().isAir() &&
+                c.getBlock(x,51,z >  0?  z - 1:z).getType().isAir() &&
+                (c.getWorld().getPlayers().stream().noneMatch(player -> player.getLocation().getX() == x && player.getLocation().getZ() == z)));
+    }
+}

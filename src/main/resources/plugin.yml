@@ -1,0 +1,13 @@
+name: Islands
+version: 1.0
+main: de.shiirroo.islands.IslandsPlugin
+api-version: 1.18
+authors: [ Shiirroo ]
+description: Islands
+commands:
+  Islands:
+    description: Command for Island plugin
+    usage: <command>
+  Spawn:
+    description: Teleport to World Spawn
+    usage: <command>
