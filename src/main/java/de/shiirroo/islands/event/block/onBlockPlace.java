@@ -1,6 +1,5 @@
 package de.shiirroo.islands.event.block;
 
-import de.shiirroo.islands.CraftCustomZombie;
 import de.shiirroo.islands.IslandsPlugin;
 import de.shiirroo.islands.gamedata.GameData;
 import org.bukkit.Chunk;

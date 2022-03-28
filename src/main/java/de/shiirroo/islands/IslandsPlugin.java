@@ -60,8 +60,6 @@ public final class IslandsPlugin extends JavaPlugin {
         plugin = this;
         MenuManager.setup(getServer(), this);
 
-        CustomEn
-
         VersionManager.updateBStats();
         registerEvents();
         plugin.getServer().setDefaultGameMode(GameMode.ADVENTURE);
